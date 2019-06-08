@@ -57,11 +57,12 @@ public class PowerOutagesController {
     	}else {
   
     			
-    			List<EventType> best = model.calcolaSequenza(nerc,anni,ore) ;
+    			List<EventType> worst = model.calcolaSequenza(nerc,anni,ore) ;
     			TxtResult.clear();
     			TxtResult.appendText("Tot persone coinvolte : "+ model.getMaxPersone());
+    			TxtResult.appendText("\n");
     			TxtResult.appendText("Tot ore di blackout :" +model.getTotOre());
-    			for(EventType e : best) {
+    			for(EventType e : worst) {
     				TxtResult.appendText(String.format("%d %d %s %d %d",e.getYear(),e.getDateInizio(),e.getDateFine(),e.getDurata(),e.getPersone()));
     				TxtResult.appendText("\n");
     			}

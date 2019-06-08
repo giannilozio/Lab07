@@ -53,11 +53,12 @@ public class PowerOutageDAO {
 			}
 
 			conn.close();
-			return eventi;
+			
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
+		return eventi;
 	}
 
 }
