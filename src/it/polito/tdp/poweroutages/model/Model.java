@@ -11,6 +11,8 @@ public class Model {
 	PowerOutageDAO podao;
 	List<EventType> idEventi = new ArrayList<>();
 	List<EventType> eventiBest = new ArrayList<>();
+	private int maxPersone;
+	private int totOre;
 	
 	
 	
@@ -22,7 +24,7 @@ public class Model {
 	
 	public List<EventType> calcolaSequenza(Nerc nerc, int anni, int ore){
 
-		List<EventType> parziale = new ArrayList<>();
+		
 		eventiBest= null;
 		idEventi=podao.getAllEventi(nerc);
 		idEventi.sort(new Comparator<EventType>() {		// ORDINO DATA CRESCENTE
@@ -33,30 +35,28 @@ public class Model {
 
 		});
 	
-		cerca(parziale,anni,ore,0);
+		cerca(new ArrayList<EventType>(),anni,ore);
 		
 		return eventiBest;
 		
 	}
 	
-	private void cerca(List<EventType> parziale, int livello, int anni, int ore) {
+	private void cerca(List<EventType> parziale, int anni,int ore) {
 
-		if (livello == idEventi.size()) { // CASO TERMINALE
-			int totClienti = calcolaClienti(parziale);
-			if (eventiBest == null || totClienti > calcolaClienti(eventiBest)) {
-
-				eventiBest = new ArrayList<>(parziale);
-
-			}
-
-		} else {
+			if (calcolaClienti(parziale) > maxPersone) {
+					maxPersone = calcolaClienti(parziale);
+					eventiBest = new ArrayList<EventType>(parziale);
+				
+			} 
 
 			for (EventType e : idEventi) {							// CASO INTERMEDIO
+			
+				if (!parziale.contains(e)) {
+					
+					parziale.add(e);									// METTO L EVENTO NELL LIST
 				
-				parziale.add(e);									// METTO L EVENTO NELL LIST
-
-				if (aggiuntaValida(e, parziale, anni, ore)) { 		// RISPETTA I REQUISITI ?
-					cerca(parziale, livello + 1, anni, ore);
+				if (aggiuntaValida(e, parziale, anni, ore) && sommaOre(parziale ,ore)) 	{	// RISPETTA I REQUISITI ?
+					cerca(parziale, anni, ore);
 				}
 					parziale.remove(e);
 				
@@ -79,25 +79,29 @@ public class Model {
 	
 		if (parziale.size() >=2 ) {
 			
-			int y1 = parziale.get(0).getDateInizio().getYear();
-			int y2 = parziale.get(parziale.size()).getDateInizio().getYear();
-			if ((y2 - y1 ) > anni) {
+			int y1 = parziale.get(0).getYear();
+			int y2 = parziale.get(parziale.size() - 1).getYear();
+			if ((y2 - y1 + 1) > anni) {
 				return false;
 			}
 		}
 		
-		if(sommaOre(parziale) < ore)
+	
 		return true;
-		
-		return false;
 	}
 
-	public int sommaOre(List<EventType> parziale) {
+	public boolean sommaOre(List<EventType> parziale, int ore) {
 		int sum = 0;
 		for (EventType e : parziale) {
 			sum += e.getDurata();
 		}
-		return sum;
+		
+		if(sum>ore) {
+		return false;
+		}
+		totOre=sum;
+		return true;
+		
 	}
 	
 
@@ -105,6 +109,36 @@ public class Model {
 
 	public List<Nerc> getNercList() {
 		return podao.getNercList();
+	}
+
+
+	public List<EventType> getEventiBest() {
+		return eventiBest;
+	}
+
+
+	public void setEventiBest(List<EventType> eventiBest) {
+		this.eventiBest = eventiBest;
+	}
+
+
+	public int getMaxPersone() {
+		return maxPersone;
+	}
+
+
+	public void setMaxPersone(int maxPersone) {
+		this.maxPersone = maxPersone;
+	}
+
+
+	public int getTotOre() {
+		return totOre;
+	}
+
+
+	public void setTotOre(int totOre) {
+		this.totOre = totOre;
 	}
 
 

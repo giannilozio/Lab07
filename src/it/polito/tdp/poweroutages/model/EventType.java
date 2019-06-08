@@ -115,9 +115,29 @@ public class EventType {
 
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + idEvent;
+		return result;
+	}
+
+
+
+
+	@Override
 	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
-		return super.equals(obj);
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EventType other = (EventType) obj;
+			if (idEvent != other.idEvent)
+				return false;
+			
+			return true;
 	}
 
 
@@ -125,7 +145,8 @@ public class EventType {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
+		StringBuilder builder = new StringBuilder();
+		builder.append(idEvent);
 		return super.toString();
 	}
 	

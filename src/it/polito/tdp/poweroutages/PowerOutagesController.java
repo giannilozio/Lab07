@@ -44,7 +44,7 @@ public class PowerOutagesController {
 
     @FXML
     void doCalcola(ActionEvent event) {
-    	TxtResult.clear();
+    	
     	Nerc nerc = ChoiceBott.getValue();
     	int anni = Integer.parseInt(MaxYearsBott.getText());
     	int ore = Integer.parseInt(MaxHoursBott.getText());
@@ -58,8 +58,13 @@ public class PowerOutagesController {
   
     			
     			List<EventType> best = model.calcolaSequenza(nerc,anni,ore) ;
-    			TxtResult.appendText("Sequenza ottima per il mese "+nerc.toString()+"\n");
-    			TxtResult.appendText(best.toString()+"\n");
+    			TxtResult.clear();
+    			TxtResult.appendText("Tot persone coinvolte : "+ model.getMaxPersone());
+    			TxtResult.appendText("Tot ore di blackout :" +model.getTotOre());
+    			for(EventType e : best) {
+    				TxtResult.appendText(String.format("%d %d %s %d %d",e.getYear(),e.getDateInizio(),e.getDateFine(),e.getDurata(),e.getPersone()));
+    				TxtResult.appendText("\n");
+    			}
     		}
   
 
